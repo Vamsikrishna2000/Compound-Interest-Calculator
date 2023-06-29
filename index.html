@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interest Calculator</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(#84adbe, #04465f);
+    }
+
+    .calculator {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+    }
+
+    .calculator h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .input-group {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .input-group input[type="text"] {
+      width: 200px;
+      padding: 5px;
+      margin-left: 10px;
+    }
+
+    .submit-btn {
+      padding: 5px 10px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    #output {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <h1>Compound Interest Calculator</h1>
+    <div class="input-group">
+      <label for="first">Amount:</label>
+      <input type="text" name="a" id="first" placeholder="Amount" />
+    </div>
+    <div class="input-group">
+      <label for="second">Years:</label>
+      <input type="text" name="b" id="second" placeholder="Years" />
+    </div>
+    <div class="input-group">
+      <label for="third">Months:</label>
+      <input type="text" name="c" id="third" placeholder="Months" />
+    </div>
+    <div class="input-group">
+      <label for="fourth">Days:</label>
+      <input type="text" name="d" id="fourth" placeholder="Days" />
+    </div>
+    <div class="input-group">
+      <label for="fifth">Interest(%):</label>
+      <input type="text" name="e" id="fifth" placeholder="Interest(%)" />
+    </div>
+    <button class="submit-btn" onclick="compound_interest()">Submit</button>
+    <div id="output"></div>
+  </div>
+  
+
+  <script type="text/javascript">
+    function compound_interest() {
+      var p, t1, t2, t3, r, amount1, amount2, amount3, total, ci;
+      p = document.getElementById("first").value;
+      t1 = document.getElementById("second").value;
+      t2 = document.getElementById("third").value;
+      t3 = document.getElementById("fourth").value;
+      r = document.getElementById("fifth").value;
+
+      // Set default values if input is empty
+      if (p === "") {
+        p = "100000";  // Default amount
+      }
+
+      if (t1 === "") {
+        t1 = "0";    // Default years
+      }
+
+      if (t2 === "") {
+        t2 = "0";    // Default months
+      }
+
+      if (t3 === "") {
+        t3 = "0";    // Default days
+      }
+
+      if (r === "") {
+        r = "18";     // Default interest rate
+      }
+
+      // Parse the input values as floats
+      p = parseFloat(p);
+      t1 = parseFloat(t1);
+      t2 = parseFloat(t2);
+      t3 = parseFloat(t3);
+      r = parseFloat(r);
+
+      // Check if any input value is NaN
+      if (isNaN(p) || isNaN(t1) || isNaN(t2) || isNaN(t3) || isNaN(r)) {
+        document.getElementById("output").innerHTML = "Please enter valid input values.";
+        return;
+      }
+
+      amount1 = p * Math.pow(1 + r / 100, t1);
+      amount2 = (t2 * amount1 * r) / 1200;
+      amount3 = (amount1 * r * t3)/(36000)
+
+     
+   
+
+      total = amount1 + amount2 + amount3;
+
+      ci = total - p;
+      document.getElementById("output").innerHTML = "Interest: " + ci + "<br>Total Amount: " + total;
+    }
+  </script>
+</body>
+</html>
