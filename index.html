@@ -1,145 +1,335 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Interest Calculator</title>
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet" />
-  <style>
-    body {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(#84adbe, #04465f);
-    }
-
-    .calculator {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 5px;
-    }
-
-    .calculator h1 {
-      font-size: 24px;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-
-    .input-group {
-      display: flex;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-
-    .input-group input[type="text"] {
-      width: 200px;
-      padding: 5px;
-      margin-left: 10px;
-    }
-
-    .submit-btn {
-      padding: 5px 10px;
-      background-color: #4caf50;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-
-    #output {
-      font-weight: bold;
-      margin-top: 10px;
-    }
-  </style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Interest Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(#84adbe, #04465f);
+    padding: 20px;
+  }
+  .calculator {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    width: 360px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  }
+  .calculator h1 {
+    font-size: 18px;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+  .input-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    justify-content: space-between;
+  }
+  .input-group input[type="text"], .input-group input[type="date"] {
+    width: 180px;
+    padding: 6px 8px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+  }
+  .submit-btn {
+    padding: 8px 12px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    border-radius: 6px;
+    font-weight: 500;
+  }
+  .checkboxes {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+  #output { font-weight: 600; margin-top: 10px; font-size: 14px; line-height:1.4; }
+  #periodOutput { font-weight: 600; margin-top: 8px; font-size: 14px; text-align:center; }
+  .small { font-size: 12px; color: #444; }
+</style>
 </head>
 <body>
-  <div class="calculator">
-    <h1>Compound Interest Calculator</h1>
-    <div class="input-group">
-      <label for="first">Amount:</label>
-      <input type="text" name="a" id="first" placeholder="Amount" />
-    </div>
-    <div class="input-group">
-      <label for="second">Years:</label>
-      <input type="text" name="b" id="second" placeholder="Years" />
-    </div>
-    <div class="input-group">
-      <label for="third">Months:</label>
-      <input type="text" name="c" id="third" placeholder="Months" />
-    </div>
-    <div class="input-group">
-      <label for="fourth">Days:</label>
-      <input type="text" name="d" id="fourth" placeholder="Days" />
-    </div>
-    <div class="input-group">
-      <label for="fifth">Interest(%):</label>
-      <input type="text" name="e" id="fifth" placeholder="Interest(%)" />
-    </div>
-    <button class="submit-btn" onclick="compound_interest()">Submit</button>
-    <div id="output"></div>
+
+<!-- Time Period Calculator -->
+<div class="calculator">
+  <h1>Time Period Calculator</h1>
+  <div class="input-group">
+    <label for="startDate">Start Date:</label>
+    <input type="date" id="startDate" />
   </div>
-  
+  <div class="input-group">
+    <label for="endDate">End Date:</label>
+    <input type="date" id="endDate" />
+  </div>
+  <button class="submit-btn" onclick="calculatePeriod()">Calculate Period</button>
+  <div id="periodOutput"></div>
+</div>
 
-  <script type="text/javascript">
-    function compound_interest() {
-      var p, t1, t2, t3, r, amount1, amount2, amount3, total, ci;
-      p = document.getElementById("first").value;
-      t1 = document.getElementById("second").value;
-      t2 = document.getElementById("third").value;
-      t3 = document.getElementById("fourth").value;
-      r = document.getElementById("fifth").value;
+<!-- Interest Calculator -->
+<div class="calculator">
+  <h1>Interest Calculator</h1>
 
-      // Set default values if input is empty
-      if (p === "") {
-        p = "100000";  // Default amount
-      }
+  <div class="checkboxes">
+    <label><input type="checkbox" id="chkSimple"> Simple (సాధారణ వడ్డీ)</label>
+    <label><input type="checkbox" id="chkCompound" checked> Compound (చక్రవడ్డీ)</label>
+  </div>
+  <div class="small" style="text-align:center; margin-bottom:8px;">
+    (Choose one or both. By default Compound is selected.)
+  </div>
 
-      if (t1 === "") {
-        t1 = "0";    // Default years
-      }
+  <div class="input-group">
+    <label>Amount:</label>
+    <input type="text" id="first" placeholder="Amount" />
+  </div>
+  <div class="input-group">
+    <label>Years:</label>
+    <input type="text" id="second" placeholder="Years" value="0" />
+  </div>
+  <div class="input-group">
+    <label>Months:</label>
+    <input type="text" id="third" placeholder="Months" value="0" />
+  </div>
+  <div class="input-group">
+    <label>Days:</label>
+    <input type="text" id="fourth" placeholder="Days" value="0" />
+  </div>
+  <div class="input-group">
+    <label>Interest(%):</label>
+    <input type="text" id="fifth" placeholder="Interest(%)" />
+  </div>
 
-      if (t2 === "") {
-        t2 = "0";    // Default months
-      }
+  <button class="submit-btn" onclick="calculateInterest()">Calculate Interest</button>
+  <div id="output"></div>
+</div>
 
-      if (t3 === "") {
-        t3 = "0";    // Default days
-      }
-
-      if (r === "") {
-        r = "18";     // Default interest rate
-      }
-
-      // Parse the input values as floats
-      p = parseFloat(p);
-      t1 = parseFloat(t1);
-      t2 = parseFloat(t2);
-      t3 = parseFloat(t3);
-      r = parseFloat(r);
-
-      // Check if any input value is NaN
-      if (isNaN(p) || isNaN(t1) || isNaN(t2) || isNaN(t3) || isNaN(r)) {
-        document.getElementById("output").innerHTML = "Please enter valid input values.";
-        return;
-      }
-
-      amount1 = p * Math.pow(1 + r / 100, t1);
-      amount2 = (t2 * amount1 * r) / 1200;
-      amount3 = (amount1 * r * t3)/(36000)
-
-     
-   
-
-      total = amount1 + amount2 + amount3;
-
-      ci = total - p;
-      document.getElementById("output").innerHTML = "Interest: " + ci + "<br>Total Amount: " + total;
+<script>
+  // Format integer part with Indian grouping (e.g., 10,00,000)
+  function formatIndianInteger(intStr) {
+    // remove leading zeros
+    intStr = intStr.replace(/^0+(?=\d)/, '');
+    let n = intStr.length;
+    if (n <= 3) return intStr;
+    let last3 = intStr.slice(n - 3);
+    let rest = intStr.slice(0, n - 3);
+    // split rest into groups of 2 from right
+    let parts = [];
+    while (rest.length > 2) {
+      parts.unshift(rest.slice(-2));
+      rest = rest.slice(0, -2);
     }
-  </script>
+    if (rest.length > 0) parts.unshift(rest);
+    return parts.join(',') + ',' + last3;
+  }
+
+  // Format numeric string to Indian format and optionally fix decimals up to 2 places
+  function formatIndianNumberRaw(raw) {
+    if (raw === '' || raw === '.' ) return '';
+    // ensure only digits and at most one dot
+    raw = raw.replace(/[^0-9.]/g, '');
+    let parts = raw.split('.');
+    let intPart = parts[0] || '0';
+    let decPart = parts[1] || '';
+    // limit decimals to 2 for display
+    if (decPart.length > 2) decPart = decPart.slice(0,2);
+    let intFormatted = formatIndianInteger(intPart);
+    return decPart ? intFormatted + '.' + decPart : intFormatted;
+  }
+
+  function formatCurrencyForDisplay(num) {
+    // num is numeric
+    if (isNaN(num) || num === null) return '₹0.00';
+    // keep two decimals
+    let fixed = Number(num).toFixed(2);
+    let parts = fixed.split('.');
+    return '₹' + formatIndianInteger(parts[0]) + '.' + parts[1];
+  }
+
+  // Parse input value with ₹ and commas to numeric
+  function parseCurrencyInput(val) {
+    if (!val && val !== 0) return 0;
+    // remove non-digits except dot and minus
+    let cleaned = String(val).replace(/[^0-9.]/g, '');
+    if (cleaned === '') return 0;
+    // handle multiple dots: keep first
+    const dots = cleaned.split('.');
+    if (dots.length > 2) {
+      cleaned = dots.shift() + '.' + dots.join('');
+    }
+    let parsed = parseFloat(cleaned);
+    return isNaN(parsed) ? 0 : parsed;
+  }
+
+  // Live-format the Amount input to Indian grouping with ₹
+  const amountInput = document.getElementById('first');
+  amountInput.addEventListener('input', (e) => {
+    const cursorPos = amountInput.selectionStart;
+    const raw = amountInput.value;
+    // Remove existing ₹ and commas etc, but keep digits and dot
+    const cleaned = raw.replace(/[^0-9.]/g, '');
+    // Build a formatted string (preserve up to 2 decimals while typing)
+    const parts = cleaned.split('.');
+    let intPart = parts[0] || '';
+    let decPart = parts[1] || '';
+    // limit decimals to 2
+    if (decPart.length > 2) decPart = decPart.slice(0,2);
+    const formattedInt = intPart === '' ? '' : formatIndianInteger(intPart);
+    const display = formattedInt + (decPart ? '.' + decPart : '');
+    amountInput.value = display ? '₹' + display : '';
+    // try to set cursor at end (simple approach)
+    amountInput.selectionStart = amountInput.selectionEnd = amountInput.value.length;
+  });
+
+  // Also format when input loses focus (ensure 2 decimals)
+  amountInput.addEventListener('blur', () => {
+    const rawNum = parseCurrencyInput(amountInput.value);
+    amountInput.value = formatCurrencyForDisplay(rawNum);
+  });
+
+  // On focus remove fixed decimals so user can edit easily but keep ₹ prefix
+  amountInput.addEventListener('focus', () => {
+    // remove ₹ and decimals limit but keep numeric formatted integer+maybe decimals
+    const rawNum = parseCurrencyInput(amountInput.value);
+    // Show without forcing two decimals to allow natural typing
+    amountInput.value = rawNum ? '₹' + formatIndianNumberRaw(String(rawNum)) : '';
+    amountInput.selectionStart = amountInput.selectionEnd = amountInput.value.length;
+  });
+
+  // Calculate Period from Dates and autofill years, months, days
+  function calculatePeriod() {
+    let startVal = document.getElementById("startDate").value;
+    let endVal = document.getElementById("endDate").value;
+
+    if (!startVal || !endVal) {
+      document.getElementById("periodOutput").innerHTML = "Please select both dates.";
+      return;
+    }
+
+    let start = new Date(startVal);
+    let end = new Date(endVal);
+
+    if (end < start) {
+      document.getElementById("periodOutput").innerHTML = "End date must be after start date.";
+      return;
+    }
+
+    let years = end.getFullYear() - start.getFullYear();
+    let months = end.getMonth() - start.getMonth();
+    let days = end.getDate() - start.getDate();
+
+    if (days < 0) {
+      months--;
+      // days in previous month of 'end'
+      let prevMonthDays = new Date(end.getFullYear(), end.getMonth(), 0).getDate();
+      days += prevMonthDays;
+    }
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+
+    document.getElementById("periodOutput").innerHTML =
+      `Time Period: ${years} Years, ${months} Months, ${days} Days`;
+
+    // Auto-fill in interest calculator inputs
+    document.getElementById("second").value = years;
+    document.getElementById("third").value = months;
+    document.getElementById("fourth").value = days;
+  }
+
+  // Calculate selected interest types
+  function calculateInterest() {
+    const chkSimple = document.getElementById('chkSimple').checked;
+    const chkCompound = document.getElementById('chkCompound').checked;
+
+    if (!chkSimple && !chkCompound) {
+      document.getElementById("output").innerHTML = "Please select at least one interest type.";
+      return;
+    }
+
+    // Read inputs with same defaults as requested
+    let p = parseCurrencyInput(document.getElementById("first").value);
+    let t1 = parseFloat(document.getElementById("second").value);
+    let t2 = parseFloat(document.getElementById("third").value);
+    let t3 = parseFloat(document.getElementById("fourth").value);
+    let r = parseFloat(document.getElementById("fifth").value);
+
+    if (isNaN(p) || p === undefined || p === 0) p = 100000;
+    if (isNaN(t1) || t1 === undefined) t1 = 0;
+    if (isNaN(t2) || t2 === undefined) t2 = 0;
+    if (isNaN(t3) || t3 === undefined) t3 = 0;
+    if (isNaN(r) || r === undefined) r = 18;
+
+    if ([p, t1, t2, t3, r].some(v => isNaN(v))) {
+      document.getElementById("output").innerHTML = "Please enter valid input values.";
+      return;
+    }
+
+    let outParts = [];
+
+    // Compound Interest (preserve original compound logic)
+    if (chkCompound) {
+      let amount1 = p * Math.pow(1 + r / 100, t1);
+      let amount2 = (t2 * amount1 * r) / 1200;
+      let amount3 = (amount1 * r * t3) / 36000;
+      let totalCompound = amount1 + amount2 + amount3;
+      let ci = totalCompound - p;
+
+      outParts.push(
+        `<div><strong>Compound (చక్రవడ్డీ):</strong></div>` +
+        `<div>Interest (వడ్డీ): ${formatCurrencyForDisplay(ci)}</div>` +
+        `<div>Total Amount (మొత్తం విలువ): ${formatCurrencyForDisplay(totalCompound)}</div>`
+      );
+    }
+
+    // Simple Interest
+    if (chkSimple) {
+      // convert t1,t2,t3 to fractional years
+      let totalYears = t1 + (t2 / 12) + (t3 / 365);
+      let si = (p * r * totalYears) / 100;
+      let totalSimple = p + si;
+
+      outParts.push(
+        `<div><strong>Simple (సాధారణ వడ్డీ):</strong></div>` +
+        `<div>Interest (వడ్డీ): ${formatCurrencyForDisplay(si)}</div>` +
+        `<div>Total Amount (మొత్తం విలువ): ${formatCurrencyForDisplay(totalSimple)}</div>`
+      );
+    }
+
+    document.getElementById("output").innerHTML = outParts.join('<hr style="margin:8px 0;">');
+  }
+
+  // Initialize defaults on load
+  window.addEventListener('DOMContentLoaded', () => {
+    // 1) End date default to today, start date left empty
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    const iso = `${yyyy}-${mm}-${dd}`;
+    document.getElementById('endDate').value = iso;
+    document.getElementById('startDate').value = ''; // explicitly empty
+    document.getElementById('periodOutput').innerHTML = '';
+
+    // 2) Default Amount = 100000 and Interest = 18%
+    document.getElementById('first').value = formatCurrencyForDisplay(100000);
+    document.getElementById('fifth').value = 18;
+
+    // years/months/days defaults kept as 0 (already set)
+  });
+</script>
+
 </body>
 </html>
